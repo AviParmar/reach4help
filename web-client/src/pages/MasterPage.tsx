@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Redirect,
   Route,
@@ -10,6 +10,8 @@ import {
 } from 'react-router-dom';
 import DashboardLayout from 'src/components/DashboardLayout/DashboardLayout';
 import { signOutCurrentUserAction } from 'src/ducks/auth/actions';
+import { updateUserProfile } from 'src/ducks/profile/actions';
+import { ProfileState } from 'src/ducks/profile/types';
 import { postUrlRoot } from 'src/modules/requests/constants';
 import { Module } from 'src/types/module';
 
@@ -20,7 +22,9 @@ import ProtectedRoute from './routes/ProtectedRoute';
 
 const MasterPage = (): ReactElement => {
   const { t } = useTranslation();
-
+  const profileState = useSelector(
+    ({ profile }: { profile: ProfileState }) => profile,
+  );
   const dispatch = useDispatch();
 
   const titleFromPath = () => {
@@ -67,7 +71,16 @@ const MasterPage = (): ReactElement => {
             <title>{titleFromPath()}</title>
           </Helmet>
           <DashboardLayout
-            logoutHandler={() => dispatch(signOutCurrentUserAction())}
+            logoutHandler={() => {
+              // TODO: ethan review logout processing
+              const user = profileState.profile;
+              if (user) {
+                // TODO: ethan review if this is correct way to update user profile
+                profileState.profile = undefined;
+                dispatch(updateUserProfile('logout', user ));
+              }
+              dispatch(signOutCurrentUserAction());
+            }}
           >
             <Route path={routeModule.path} component={routeModule.component} />
           </DashboardLayout>

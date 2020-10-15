@@ -35,6 +35,7 @@ const PostsContainer: React.FC<PostsProps> = ({
   const profileState = useSelector(
     ({ profile }: { profile: ProfileState }) => profile,
   );
+  console.log('profilestate', profileState);
 
   const requestWithOffersAndTimeline = useSelector(
     ({ requests }: { requests: RequestState }) =>

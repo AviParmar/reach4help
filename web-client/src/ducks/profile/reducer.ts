@@ -77,9 +77,22 @@ export default createReducer<ProfileState>(
       state.error = payload;
       state.setAction = undefined;
     },
-    [UPDATE.PENDING]: (state: ProfileState) => {
-      state.loading = true;
-      state.error = undefined;
+    [UPDATE.PENDING]: (state: ProfileState, { payload }) => {
+      // TODO: ethan review logout processing
+      if (payload && payload.uid === 'logout') {
+        console.log('initializing');
+        state.profile = undefined;
+        state.privilegedInformation = undefined;
+        state.userRef = undefined;
+        state.uid = undefined;
+        state.loading = false;
+        state.setAction = undefined;
+        state.updateAction = undefined;
+        state.observerReceivedFirstUpdate = false;
+        state.privilegedObserverReceivedFirstUpdate = false;
+        state.error = undefined;
+        console.log(state.profile);
+      }
     },
     [UPDATE.COMPLETED]: (state: ProfileState) => {
       state.error = undefined;

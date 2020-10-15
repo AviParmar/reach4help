@@ -36,7 +36,14 @@ export default createReducer<AuthState>(
       state.observerReceivedFirstUpdate = true;
     },
     [LOGOUT.PENDING]: (state: AuthState) => {
-      state.loading = true;
+      // TODO: ethan review logout processing
+      state.loading = false;
+      state.checkEmail = undefined;
+      state.onboarded = false;
+      state.error = undefined;
+      state.user = firebaseAuth.currentUser;
+      state.confirmationResult = undefined;
+      state.observerReceivedFirstUpdate = false;
     },
     [LOGOUT.REJECTED]: (state: AuthState, { payload }: { payload: Error }) => {
       state.loading = false;
